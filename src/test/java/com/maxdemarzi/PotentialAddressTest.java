@@ -36,17 +36,28 @@ public class PotentialAddressTest {
             put("address", "571 South Harbor Dr. Chicago IL 60601-4321");
             put("score", 0.73913044);
         }});
+        add(new HashMap<String, Object>() {{
+            put("address", "17 East State St. Chicago IL 60605-5533");
+            put("score", 0.55813956);
+        }});
     }};
 
     public static final String MODEL_STATEMENT =
             new StringBuilder()
                     .append("CREATE (max:User {username:'maxdemarzi'})")
                     .append("CREATE (a1:Address {line1:'175 North Harbor Dr.', city:'Chicago', state:'IL', zip:'60605', zip_plus_4:'1234'})")
-                    .append("CREATE (a2:Address {line1:'571 South Harbor Dr.', city:'Chicago', state:'IL', zip:'60601', zip_plus_4:'4321'})")
                     .append("CREATE (max)-[:HAS_ADDRESS]->(a1)")
-                    .append("CREATE (max)-[:HAS_ADDRESS]->(a2)")
-                    .append("CREATE (sam:User {username:'samadams'})")
-                    .append("CREATE (a3:Address {line1:'176 North Harbor Dr.', city:'Chicago', state:'IL', zip:'60605', zip_plus_4:'1234'})")
-                    .append("CREATE (sam)-[:HAS_ADDRESS]->(a2)")
+                    .append("CREATE (tom:User {username:'tomjones'})")
+                    .append("CREATE (a2:Address {line1:'571 South Harbor Dr.', city:'Chicago', state:'IL', zip:'60601', zip_plus_4:'4321'})")
+                    .append("CREATE (tom)-[:HAS_ADDRESS]->(a2)")
+                    .append("CREATE (max)-[:KNOWS]->(tom)")
+                    .append("CREATE (neo:Company {name:'Neo Technology'})")
+                    .append("CREATE (a3:Address {line1:'111 E 5th Avenue', city:'San Mateo', state:'CA', zip:'94401'})")
+                    .append("CREATE (neo)-[:HAS_ADDRESS]->(a3)")
+                    .append("CREATE (max)-[:WORKS_FOR]->(neo)")
+                    .append("CREATE (org:Organization {name:'Graph Meetup'})")
+                    .append("CREATE (a4:Address {line1:'17 East State St.', city:'Chicago', state:'IL', zip:'60605', zip_plus_4:'5533'})")
+                    .append("CREATE (org)-[:HAS_ADDRESS]->(a4)")
+                    .append("CREATE (max)-[:BELONGS_TO]->(org)")
                     .toString();
 }

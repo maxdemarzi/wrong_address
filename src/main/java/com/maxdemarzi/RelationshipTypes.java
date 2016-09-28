@@ -4,5 +4,8 @@ import org.neo4j.graphdb.RelationshipType;
 
 public enum RelationshipTypes implements RelationshipType
 {
-    HAS_ADDRESS
+    BELONGS_TO,
+    HAS_ADDRESS,
+    KNOWS,
+    WORKS_FOR
 }

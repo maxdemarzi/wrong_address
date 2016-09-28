@@ -43,15 +43,13 @@ public class User {
             if (user != null) {
                 HashSet<String> addresses = new HashSet<>();
 
-                for (Relationship rel : user.getRelationships(Direction.OUTGOING, RelationshipTypes.HAS_ADDRESS)) {
-                    Node address = rel.getEndNode();
-                    addresses.add(
-                            address.getProperty("line1", "") + " " +
-                                    address.getProperty("city", "") + " " +
-                                    address.getProperty("state", "") + " " +
-                                    address.getProperty("zip", "") + "-" +
-                                    address.getProperty("zip_plus_4", "")
-                    );
+                getAddresses(user, addresses);
+                for (Relationship rel : user.getRelationships(Direction.BOTH,
+                        RelationshipTypes.KNOWS,
+                        RelationshipTypes.BELONGS_TO,
+                        RelationshipTypes.WORKS_FOR)) {
+                    Node addressOwner = rel.getOtherNode(user);
+                    getAddresses(addressOwner, addresses);
                 }
 
                 String potential_address = addressSimplifier.simplify((String) input.get("address"));
@@ -69,5 +67,22 @@ public class User {
         Collections.sort(results, scoreComparator);
 
         return Response.ok().entity(objectMapper.writeValueAsString(results)).build();
+    }
+
+    private void getAddresses(Node user, HashSet<String> addresses) {
+        for (Relationship rel : user.getRelationships(Direction.OUTGOING, RelationshipTypes.HAS_ADDRESS)) {
+            Node address = rel.getEndNode();
+            includeAddress(addresses, address);
+        }
+    }
+
+    private void includeAddress(HashSet<String> addresses, Node address) {
+        addresses.add(
+                address.getProperty("line1", "") + " " +
+                        address.getProperty("city", "") + " " +
+                        address.getProperty("state", "") + " " +
+                        address.getProperty("zip", "") + "-" +
+                        address.getProperty("zip_plus_4", "")
+        );
     }
 }
